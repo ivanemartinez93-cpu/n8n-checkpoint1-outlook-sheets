@@ -1,3 +1,7 @@
+# Corrección de la entrega final
+
+La versión corregida, los dos flujos sanitizados y las pruebas del Error Trigger están en [entrega-final/correccion](entrega-final/correccion/README.md). La captura histórica es de una versión anterior; la prueba de Slack y alerta se documenta por separado.
+
 # Entrega final del curso
 
 El proyecto final, su JSON sanitizado, la captura de ejecución y la explicación están en [entrega-final](entrega-final/README.md). La prueba utiliza Outlook en lugar de Gmail, como se explica allí.
