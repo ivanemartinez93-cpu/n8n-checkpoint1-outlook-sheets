@@ -1,0 +1,389 @@
+{
+  "name": "Curso n8n - Proyecto final borrador Outlook",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "output": "raw",
+        "filters": {
+          "custom": "subject eq 'PRUEBA-N8N-FINAL-URGENTE-1401'"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlookTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        96
+      ],
+      "id": "7a0cfe75-b279-4b02-b3e1-19c57b4f7c47",
+      "name": "Microsoft Outlook Trigger"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "REEMPLAZAR_CANAL",
+          "mode": "id"
+        },
+        "text": "=Prueba n8n: correo urgente registrado. Remitente: {{ $(\"Filtro URGENTE\").item.json.Remitente }} | Asunto: {{ $(\"Filtro URGENTE\").item.json.Asunto }} | Fecha: {{ $(\"Filtro URGENTE\").item.json.Fecha }} | Cuerpo: {{ $(\"Microsoft Outlook Trigger\").item.json.bodyPreview || \"Sin contenido\" }} | Registro Airtable: https://airtable.com/REEMPLAZAR_BASE/REEMPLAZAR_TABLA/{{ $json.id }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        896,
+        0
+      ],
+      "id": "45ac5963-742e-4732-8c88-68e658067a2c",
+      "name": "Notificación Slack",
+      "webhookId": "06008db8-2a93-418b-ae20-96406ed403d9"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "REEMPLAZAR_BASE",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "REEMPLAZAR_TABLE",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Asunto }}",
+            "Email": "={{ $json.Remitente }}",
+            "Fecha recepcion": "={{ $json.Fecha }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Assignee",
+              "displayName": "Assignee",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachments",
+              "displayName": "Attachments",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachment Summary",
+              "displayName": "Attachment Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha recepcion",
+              "displayName": "Fecha recepcion",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "d762e4c4-d5a7-4c06-a7b6-1da91e2c4a1d",
+      "name": "Registro en Airtable",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "ac84e52b-9cc2-42f5-80af-3cd843cfff7e",
+              "leftValue": "={{ ($json.Asunto || '').toLowerCase() }}",
+              "rightValue": "urgente",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "33d6dffb-1f3e-4f7e-a2c7-6d9b18f4740e",
+      "name": "Filtro URGENTE"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REEMPLAZAR_ID_HOJA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Registro",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Remitente": "={{ $json.from.emailAddress.address }}",
+            "Asunto": "={{ $json.subject }}",
+            "Fecha": "={{ $json.receivedDateTime }}",
+            "ID mensaje": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "ID mensaje"
+          ],
+          "schema": [
+            {
+              "id": "Remitente",
+              "displayName": "Remitente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Asunto",
+              "displayName": "Asunto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID mensaje",
+              "displayName": "ID mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "600915cf-306e-46b1-8c3b-7801bbef05cc",
+      "name": "Registro en Google Sheets"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "REEMPLAZAR_CANAL",
+          "mode": "id"
+        },
+        "text": "Alerta de prueba n8n: falló el registro en Airtable. Revisar la ejecución antes de reintentar.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        944,
+        144
+      ],
+      "id": "943b3a2b-7cf8-40e8-aeb0-ba297be049f1",
+      "name": "Alerta error Airtable",
+      "webhookId": "42e73e0c-1e0e-4e86-8737-4c7d93804178"
+    }
+  ],
+  "connections": {
+    "Microsoft Outlook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Registro en Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro en Airtable": {
+      "main": [
+        [
+          {
+            "node": "Notificación Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alerta error Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro URGENTE": {
+      "main": [
+        [
+          {
+            "node": "Registro en Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro en Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Filtro URGENTE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "nodeGroups": [],
+  "tags": []
+}
+
