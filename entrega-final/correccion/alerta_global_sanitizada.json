@@ -1,0 +1,54 @@
+{
+  "name": "Curso n8n - Alertas globales borrador",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5cad95b9-81d9-43d7-8eb6-fb5e209eb4a0",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "toRecipients": "REEMPLAZAR_CORREO_PROPIO",
+        "subject": "Alerta de prueba n8n: fallo del flujo",
+        "bodyContent": "Se detectó un fallo en el flujo del curso. Revisá las ejecuciones de n8n antes de reintentar.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a21e0473-b44a-4e78-b544-6bc1e4ec5912",
+      "name": "Send a message",
+      "webhookId": "15084f48-b297-4873-9720-beecbfba3134"
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
+
