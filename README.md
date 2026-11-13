@@ -1,3 +1,7 @@
+# Entrega final del curso
+
+El proyecto final, su JSON sanitizado, la captura de ejecución y la explicación están en [entrega-final](entrega-final/README.md). La prueba utiliza Outlook en lugar de Gmail, como se explica allí.
+
 # Checkpoint 1: registro de correo en Sheets
 
 El flujo conecta Microsoft Outlook con Google Sheets y registra remitente, asunto, fecha de recepción e ID del mensaje. En las pruebas, un segundo procesamiento del mismo ID actualizó la fila existente en lugar de añadir otra. La imagen muestra una ejecución con estado Succeeded.
