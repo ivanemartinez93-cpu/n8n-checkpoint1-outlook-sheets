@@ -12,7 +12,7 @@
         },
         "output": "raw",
         "filters": {
-          "custom": "subject eq 'PRUEBA-N8N-CODER-URGENTE'"
+          "custom": "subject eq 'PRUEBA-N8N-FINAL-URGENTE-1401'"
         },
         "options": {}
       },
@@ -27,116 +27,24 @@
     },
     {
       "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
+        "select": "channel",
+        "channelId": {
           "__rl": true,
-          "value": "REEMPLAZAR_ID_HOJA",
+          "value": "REEMPLAZAR_CANAL",
           "mode": "id"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Registro",
-          "mode": "name"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "Remitente": "={{ $json.from.emailAddress.address }}",
-            "Asunto": "={{ $json.subject }}",
-            "Fecha": "={{ $json.receivedDateTime }}",
-            "ID mensaje": "={{ $json.id }}"
-          },
-          "matchingColumns": [
-            "ID mensaje"
-          ],
-          "schema": [
-            {
-              "id": "Remitente",
-              "displayName": "Remitente",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "Asunto",
-              "displayName": "Asunto",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "Fecha",
-              "displayName": "Fecha",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "ID mensaje",
-              "displayName": "ID mensaje",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
+        "text": "=Prueba n8n: correo urgente registrado. Remitente: {{ $(\"Filtro URGENTE\").item.json.Remitente }} | Asunto: {{ $(\"Filtro URGENTE\").item.json.Asunto }} | Fecha: {{ $(\"Filtro URGENTE\").item.json.Fecha }} | Cuerpo: {{ $(\"Microsoft Outlook Trigger\").item.json.bodyPreview || \"Sin contenido\" }} | Registro Airtable: https://airtable.com/REEMPLAZAR_BASE/REEMPLAZAR_TABLA/{{ $json.id }}",
+        "otherOptions": {}
       },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
       "position": [
-        224,
+        896,
         0
       ],
-      "id": "600915cf-306e-46b1-8c3b-7801bbef05cc",
-      "name": "Append or update row in sheet"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 4
-          },
-          "conditions": [
-            {
-              "id": "ac84e52b-9cc2-42f5-80af-3cd843cfff7e",
-              "leftValue": "={{ ($json.Asunto || '').toLowerCase() }}",
-              "rightValue": "urgente",
-              "operator": {
-                "type": "string",
-                "operation": "contains"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.4,
-      "position": [
-        448,
-        0
-      ],
-      "id": "33d6dffb-1f3e-4f7e-a2c7-6d9b18f4740e",
-      "name": "If"
+      "id": "45ac5963-742e-4732-8c88-68e658067a2c",
+      "name": "Notificación Slack",
+      "webhookId": "06008db8-2a93-418b-ae20-96406ed403d9"
     },
     {
       "parameters": {
@@ -276,29 +184,121 @@
         0
       ],
       "id": "d762e4c4-d5a7-4c06-a7b6-1da91e2c4a1d",
-      "name": "Create or update a record",
+      "name": "Registro en Airtable",
       "onError": "continueErrorOutput"
     },
     {
       "parameters": {
-        "select": "channel",
-        "channelId": {
-          "__rl": true,
-          "value": "REEMPLAZAR_CANAL",
-          "mode": "id"
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "ac84e52b-9cc2-42f5-80af-3cd843cfff7e",
+              "leftValue": "={{ ($json.Asunto || '').toLowerCase() }}",
+              "rightValue": "urgente",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
         },
-        "text": "=Prueba n8n: correo urgente registrado. Remitente: {{ $(\"If\").item.json.Remitente }} | Asunto: {{ $(\"If\").item.json.Asunto }} | Fecha: {{ $(\"If\").item.json.Fecha }} | Registro Airtable: https://airtable.com/REEMPLAZAR_BASE/REEMPLAZAR_TABLA/{{ $json.id }}",
-        "otherOptions": {}
+        "options": {}
       },
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 2.7,
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
       "position": [
-        896,
+        448,
         0
       ],
-      "id": "45ac5963-742e-4732-8c88-68e658067a2c",
-      "name": "Send a message",
-      "webhookId": "06008db8-2a93-418b-ae20-96406ed403d9"
+      "id": "33d6dffb-1f3e-4f7e-a2c7-6d9b18f4740e",
+      "name": "Filtro URGENTE"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REEMPLAZAR_ID_HOJA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Registro",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Remitente": "={{ $json.from.emailAddress.address }}",
+            "Asunto": "={{ $json.subject }}",
+            "Fecha": "={{ $json.receivedDateTime }}",
+            "ID mensaje": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "ID mensaje"
+          ],
+          "schema": [
+            {
+              "id": "Remitente",
+              "displayName": "Remitente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Asunto",
+              "displayName": "Asunto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID mensaje",
+              "displayName": "ID mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "600915cf-306e-46b1-8c3b-7801bbef05cc",
+      "name": "Registro en Google Sheets"
     },
     {
       "parameters": {
@@ -318,7 +318,7 @@
         144
       ],
       "id": "943b3a2b-7cf8-40e8-aeb0-ba297be049f1",
-      "name": "Send a message1",
+      "name": "Alerta error Airtable",
       "webhookId": "42e73e0c-1e0e-4e86-8737-4c7d93804178"
     }
   ],
@@ -327,47 +327,47 @@
       "main": [
         [
           {
-            "node": "Append or update row in sheet",
+            "node": "Registro en Google Sheets",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Append or update row in sheet": {
+    "Registro en Airtable": {
       "main": [
         [
           {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Create or update a record",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Create or update a record": {
-      "main": [
-        [
-          {
-            "node": "Send a message",
+            "node": "Notificación Slack",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Send a message1",
+            "node": "Alerta error Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro URGENTE": {
+      "main": [
+        [
+          {
+            "node": "Registro en Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro en Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Filtro URGENTE",
             "type": "main",
             "index": 0
           }
