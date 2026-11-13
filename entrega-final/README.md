@@ -16,5 +16,5 @@ El manejo de errores probado cubre la falla de Airtable cuando Slack está dispo
 
 Importar el JSON en n8n y asignar credenciales propias de Outlook, Sheets, Airtable y Slack. Reemplazar los identificadores de la hoja, base, tabla y canal; se han retirado intencionalmente. Crear en la tabla de Airtable los campos Name y Email, y en la hoja los campos Remitente, Asunto, Fecha e ID mensaje. El bot de Slack debe pertenecer al canal. Nunca publicar claves ni datos de personas.
 
-La captura de la ejecución aún no se ha incorporado a este paquete. El envío y la evaluación siguen pendientes.
+La captura `ejecucion-n8n.png` muestra la ejecución #60. El nodo Gmail visible no se ejecutó; la ruta verde comienza en Outlook. La captura es anterior a la incorporación de la rama de error, que se probó por separado. El envío y la evaluación siguen pendientes.
 
